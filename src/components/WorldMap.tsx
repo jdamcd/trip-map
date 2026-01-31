@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Map as MapGL, Layer, Source, Popup } from 'react-map-gl/mapbox';
 import type { MapLayerMouseEvent } from 'react-map-gl/mapbox';
 import type { CountryVisit, VisitEntry } from '../types';
@@ -17,7 +17,23 @@ interface WorldMapProps {
   onCountryClick?: (countryCode: string) => void;
 }
 
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  return isDark;
+}
+
 export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps) {
+  const isDark = useDarkMode();
   const [hoverInfo, setHoverInfo] = useState<{
     longitude: number;
     latitude: number;
@@ -92,6 +108,10 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
     [onCountryClick, visitsByCode]
   );
 
+  const mapStyle = isDark
+    ? 'mapbox://styles/mapbox/dark-v11'
+    : 'mapbox://styles/mapbox/light-v11';
+
   return (
     <MapGL
       initialViewState={{
@@ -102,7 +122,7 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
       minZoom={1.75}
       maxZoom={5}
       style={{ width: '100%', height: '100%' }}
-      mapStyle="mapbox://styles/mapbox/light-v11"
+      mapStyle={mapStyle}
       mapboxAccessToken={MAPBOX_TOKEN}
       interactiveLayerIds={[COUNTRY_LAYER]}
       onMouseMove={onHover}

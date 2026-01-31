@@ -156,12 +156,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-3">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900">tripm.app</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">tripm.app</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Extract travel history from your calendar
           </p>
         </div>
@@ -170,19 +170,19 @@ function App() {
       {/* Main content */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 space-y-4">
         {/* Controls */}
-        <div className="bg-white border rounded-lg p-4 space-y-4">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <DateRangeFilter dateRange={dateRange} onChange={setDateRange} />
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-2">
-                <label htmlFor="home-country" className="text-sm font-medium text-gray-700">
+                <label htmlFor="home-country" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Home:
                 </label>
                 <select
                   id="home-country"
                   value={homeCountry}
                   onChange={(e) => setHomeCountry(e.target.value)}
-                  className="px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">None (show all)</option>
                   {countries.map((c) => (
@@ -192,12 +192,12 @@ function App() {
                   ))}
                 </select>
               </div>
-              <div className="text-sm text-gray-600">
-                <span className="font-semibold text-blue-600">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
                   {totalCountries}
                 </span>{' '}
                 {totalCountries === 1 ? 'country' : 'countries'} /{' '}
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
                   {totalVisits}
                 </span>{' '}
                 {totalVisits === 1 ? 'trip' : 'trips'}
@@ -208,20 +208,20 @@ function App() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setShowCalendarInput(!showCalendarInput)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
             >
               {showCalendarInput ? 'Hide calendar import' : 'Import calendar'}
             </button>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 text-sm"
+              className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm"
             >
               {showAddForm ? 'Cancel' : 'Add trip manually'}
             </button>
             <button
               onClick={handleExport}
               disabled={visits.length === 0}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:bg-gray-300"
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:bg-gray-300 dark:disabled:bg-gray-600"
             >
               Export
             </button>
@@ -237,7 +237,7 @@ function App() {
             {visits.length > 0 && (
               <button
                 onClick={handleClearAll}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+                className="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 text-sm"
               >
                 Reset
               </button>
@@ -261,7 +261,7 @@ function App() {
         {/* List and map */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[600px]">
           {/* Visit list */}
-          <div className="bg-white border rounded-lg overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <VisitList
               visits={filteredVisits}
               onDeleteVisit={handleDeleteEntry}
@@ -272,7 +272,7 @@ function App() {
           </div>
 
           {/* Map */}
-          <div className="lg:col-span-2 bg-white border rounded-lg overflow-hidden">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <WorldMap
               visits={visitsInDateRange}
               homeCountry={homeCountry}
@@ -283,8 +283,8 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 px-4 py-3 mt-auto">
-        <div className="max-w-7xl mx-auto text-center text-sm text-gray-500">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 mt-auto">
+        <div className="max-w-7xl mx-auto text-center text-sm text-gray-500 dark:text-gray-400">
           All data is processed locally in your browser. Use import / export to back up your trip history.
         </div>
       </footer>

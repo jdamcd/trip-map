@@ -70,8 +70,8 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
   };
 
   return (
-    <div className="bg-white border rounded-lg p-4">
-      <h2 className="font-semibold text-lg mb-3">Import calendar</h2>
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+      <h2 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Import calendar</h2>
 
       <div className="flex gap-2 mb-4">
         {(['file', 'paste'] as InputMode[]).map((m) => (
@@ -83,8 +83,8 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
             }}
             className={`px-3 py-1.5 rounded text-sm ${
               mode === m
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             {m === 'file' ? 'Upload file' : 'Paste iCal'}
@@ -94,9 +94,9 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
 
       {mode === 'file' && (
         <div>
-          <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+          <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
             <div className="text-center">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-300">
                 Upload an .ics file exported from your calendar
               </div>
               <div className="text-xs text-gray-400 mt-1">
@@ -119,12 +119,12 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
             value={pastedText}
             onChange={(e) => setPastedText(e.target.value)}
             placeholder="Paste iCal data here (starts with BEGIN:VCALENDAR)..."
-            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full h-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md font-mono text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="submit"
             disabled={!pastedText || loading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed"
           >
             {loading ? 'Processing...' : 'Import'}
           </button>
@@ -132,12 +132,12 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
       )}
 
       {error && (
-        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+        <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md text-red-700 dark:text-red-300 text-sm">
           {error}
         </div>
       )}
 
-      <div className="mt-4 text-xs text-gray-500">
+      <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
         <p className="font-medium mb-1">Always check for errors. Trips are detected based on:</p>
         <ul className="list-disc list-inside space-y-0.5">
           <li>Flights and events with airport codes (e.g. JFK, LHR)</li>

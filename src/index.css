@@ -8,3 +8,19 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Dark mode popup styling for Mapbox */
+@media (prefers-color-scheme: dark) {
+  .mapboxgl-popup-content {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
+  }
+
+  .mapboxgl-popup-content * {
+    color: inherit;
+  }
+
+  .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+    border-top-color: #1f2937 !important;
+  }
+}

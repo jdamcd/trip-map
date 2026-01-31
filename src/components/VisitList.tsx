@@ -86,17 +86,17 @@ export function VisitList({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-3 border-b border-gray-200">
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex gap-2 text-sm">
-          <span className="text-gray-500">Sort:</span>
+          <span className="text-gray-500 dark:text-gray-400">Sort:</span>
           {(['name', 'date', 'count'] as SortBy[]).map((option) => (
             <button
               key={option}
               onClick={() => setSortBy(option)}
               className={`px-2 py-0.5 rounded ${
                 sortBy === option
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {sortLabels[option]}
@@ -107,11 +107,11 @@ export function VisitList({
 
       <div className="flex-1 overflow-y-auto">
         {sortedVisits.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400">
             No countries visited yet
           </div>
         ) : (
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-700">
             {sortedVisits.map((visit) => {
               const isExpanded = expandedCountries.has(visit.countryCode);
               const isHighlighted = highlightedCountry === visit.countryCode;
@@ -119,22 +119,22 @@ export function VisitList({
               return (
                 <li
                   key={visit.countryCode}
-                  className={`${isHighlighted ? 'bg-blue-50' : ''}`}
+                  className={`${isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30' : ''}`}
                 >
                   <div
-                    className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50"
+                    className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
                     onClick={() => toggleExpanded(visit.countryCode)}
                   >
                     <div className="flex items-center gap-2">
                       <span
-                        className={`transform transition-transform ${
+                        className={`transform transition-transform text-gray-600 dark:text-gray-400 ${
                           isExpanded ? 'rotate-90' : ''
                         }`}
                       >
                         ▶
                       </span>
-                      <span className="font-medium">{visit.countryName}</span>
-                      <span className="text-sm text-gray-500">
+                      <span className="font-medium text-gray-900 dark:text-white">{visit.countryName}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
                         ({visit.entries.length} trip
                         {visit.entries.length !== 1 ? 's' : ''})
                       </span>
@@ -150,7 +150,7 @@ export function VisitList({
                           onDeleteCountry(visit.countryCode);
                         }
                       }}
-                      className="text-red-500 hover:text-red-700 px-2"
+                      className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-2"
                       title="Remove country"
                     >
                       ✕
@@ -158,11 +158,11 @@ export function VisitList({
                   </div>
 
                   {isExpanded && (
-                    <ul className="bg-gray-50 pl-8 pr-3 pb-2">
+                    <ul className="bg-gray-50 dark:bg-gray-900/50 pl-8 pr-3 pb-2">
                       {visit.entries.map((entry) => (
                         <li
                           key={entry.id}
-                          className="py-2 border-b border-gray-100 last:border-0"
+                          className="py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
                         >
                           {editingEntry?.countryCode === visit.countryCode &&
                           editingEntry?.entryId === entry.id ? (
@@ -186,11 +186,11 @@ export function VisitList({
                                   {entry.source === 'manual' ? '✏️' : '📅'}
                                 </span>
                                 <div>
-                                  <div className="text-sm">
+                                  <div className="text-sm text-gray-900 dark:text-white">
                                     {formatDateRange(entry)}
                                   </div>
                                   {entry.eventTitle && (
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
                                       {entry.eventTitle.split('; ').map((title, idx) => (
                                         <div key={idx}>{title}</div>
                                       ))}
@@ -206,7 +206,7 @@ export function VisitList({
                                       entryId: entry.id,
                                     })
                                   }
-                                  className="text-blue-500 hover:text-blue-700 px-2 text-sm"
+                                  className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 px-2 text-sm"
                                 >
                                   Edit
                                 </button>
@@ -214,7 +214,7 @@ export function VisitList({
                                   onClick={() =>
                                     onDeleteVisit(visit.countryCode, entry.id)
                                   }
-                                  className="text-red-500 hover:text-red-700 px-2 text-sm"
+                                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-2 text-sm"
                                 >
                                   Delete
                                 </button>
@@ -265,28 +265,28 @@ function EntryEditor({ entry, onSave, onCancel }: EntryEditorProps) {
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className="px-2 py-1 border rounded text-sm"
+          className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           required
         />
-        <span className="text-gray-500">to</span>
+        <span className="text-gray-500 dark:text-gray-400">to</span>
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="px-2 py-1 border rounded text-sm"
+          className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         />
       </div>
       <div className="flex gap-2">
         <button
           type="submit"
-          className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+          className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
         >
           Save
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+          className="px-3 py-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-500"
         >
           Cancel
         </button>
