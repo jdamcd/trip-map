@@ -1,9 +1,12 @@
 import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
-import type { CountryVisit, VisitEntry } from '../types';
+import type { CountryVisit, DateRange, VisitEntry } from '../types';
+import { DateRangeFilter } from './DateRangeFilter';
 
 interface VisitListProps {
   visits: CountryVisit[];
+  dateRange: DateRange;
+  onDateRangeChange: (range: DateRange) => void;
   onDeleteVisit: (countryCode: string, entryId: string) => void;
   onDeleteCountry: (countryCode: string) => void;
   onEditEntry: (
@@ -25,6 +28,8 @@ const sortLabels: Record<SortBy, string> = {
 
 export function VisitList({
   visits,
+  dateRange,
+  onDateRangeChange,
   onDeleteVisit,
   onDeleteCountry,
   onEditEntry,
@@ -86,17 +91,18 @@ export function VisitList({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex gap-2 text-sm">
-          <span className="text-gray-500 dark:text-gray-400">Sort:</span>
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700 space-y-2">
+        <DateRangeFilter dateRange={dateRange} onChange={onDateRangeChange} />
+        <div className="flex items-center gap-2 text-sm">
+          <span className="w-12 shrink-0 text-gray-500 dark:text-gray-400">Sort</span>
           {(['name', 'date', 'count'] as SortBy[]).map((option) => (
             <button
               key={option}
               onClick={() => setSortBy(option)}
-              className={`px-2 py-0.5 rounded ${
+              className={`px-2 py-1 rounded border ${
                 sortBy === option
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
               }`}
             >
               {sortLabels[option]}

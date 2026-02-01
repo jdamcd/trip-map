@@ -81,10 +81,10 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
               setMode(m);
               setError(null);
             }}
-            className={`px-3 py-1.5 rounded text-sm ${
+            className={`px-3 py-1 rounded text-sm border ${
               mode === m
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
             }`}
           >
             {m === 'file' ? 'Upload file' : 'Paste iCal'}
@@ -124,7 +124,7 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
           <button
             type="submit"
             disabled={!pastedText || loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed"
           >
             {loading ? 'Processing...' : 'Import'}
           </button>

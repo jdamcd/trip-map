@@ -4,7 +4,6 @@ import type { CountryVisit, DateRange } from './types';
 import { WorldMap } from './components/WorldMap';
 import { VisitList } from './components/VisitList';
 import { CalendarInput } from './components/CalendarInput';
-import { DateRangeFilter } from './components/DateRangeFilter';
 import { AddVisitForm } from './components/AddVisitForm';
 import {
   saveVisits,
@@ -170,27 +169,71 @@ function App() {
       {/* Main content */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 space-y-4">
         {/* Controls */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <DateRangeFilter dateRange={dateRange} onChange={setDateRange} />
-            <div className="flex flex-col items-end gap-2">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setShowCalendarInput(!showCalendarInput)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              >
+                {showCalendarInput ? 'Cancel' : 'Import calendar'}
+              </button>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm"
+              >
+                {showAddForm ? 'Cancel' : 'Add trip manually'}
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={visits.length === 0}
+                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:bg-gray-300 dark:disabled:bg-gray-600"
+              >
+                Export
+              </button>
+              <label className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm cursor-pointer">
+                Import
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportJson}
+                  className="hidden"
+                />
+              </label>
+              {visits.length > 0 && (
+                <button
+                  onClick={handleClearAll}
+                  className="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 text-sm"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <label htmlFor="home-country" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Home:
+                  Home
                 </label>
-                <select
-                  id="home-country"
-                  value={homeCountry}
-                  onChange={(e) => setHomeCountry(e.target.value)}
-                  className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">None (show all)</option>
-                  {countries.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    id="home-country"
+                    value={homeCountry}
+                    onChange={(e) => setHomeCountry(e.target.value)}
+                    className="w-40 appearance-none truncate pr-7 pl-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  >
+                    <option value="">None (show all)</option>
+                    {countries.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                    <svg className="w-3 h-3 text-gray-500 dark:text-gray-400" viewBox="0 0 12 12" fill="currentColor">
+                      <path d="M6 8L1 3h10z" />
+                    </svg>
+                  </div>
+                </div>
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">
                 <span className="font-semibold text-blue-600 dark:text-blue-400">
@@ -203,45 +246,6 @@ function App() {
                 {totalVisits === 1 ? 'trip' : 'trips'}
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setShowCalendarInput(!showCalendarInput)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-            >
-              {showCalendarInput ? 'Hide calendar import' : 'Import calendar'}
-            </button>
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm"
-            >
-              {showAddForm ? 'Cancel' : 'Add trip manually'}
-            </button>
-            <button
-              onClick={handleExport}
-              disabled={visits.length === 0}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:bg-gray-300 dark:disabled:bg-gray-600"
-            >
-              Export
-            </button>
-            <label className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm cursor-pointer">
-              Import
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportJson}
-                className="hidden"
-              />
-            </label>
-            {visits.length > 0 && (
-              <button
-                onClick={handleClearAll}
-                className="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 text-sm"
-              >
-                Reset
-              </button>
-            )}
           </div>
         </div>
 
@@ -264,6 +268,8 @@ function App() {
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <VisitList
               visits={filteredVisits}
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
               onDeleteVisit={handleDeleteEntry}
               onDeleteCountry={handleDeleteCountry}
               onEditEntry={handleEditEntry}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Map as MapGL, Layer, Source, Popup } from 'react-map-gl/mapbox';
 import type { MapLayerMouseEvent } from 'react-map-gl/mapbox';
 import type { CountryVisit, VisitEntry } from '../types';
+import { countries } from '../data/countries';
 import { format } from 'date-fns';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -43,11 +44,6 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
     dates: string[];
   } | null>(null);
 
-  const visitedCountryCodes = useMemo(
-    () => visits.map((v) => v.countryCode),
-    [visits]
-  );
-
   const visitsByCode = useMemo(() => {
     const map = new Map<string, CountryVisit>();
     for (const visit of visits) {
@@ -56,10 +52,18 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
     return map;
   }, [visits]);
 
-  // Filter expression to highlight visited countries
+  // Include home country even if it has no visits
+  const highlightedCountryCodes = useMemo(() => {
+    const codes = visits.map((v) => v.countryCode);
+    if (homeCountry && !codes.includes(homeCountry)) {
+      codes.push(homeCountry);
+    }
+    return codes;
+  }, [visits, homeCountry]);
+
   const filter = useMemo(
-    () => ['in', ['get', 'iso_3166_1'], ['literal', visitedCountryCodes]],
-    [visitedCountryCodes]
+    () => ['in', ['get', 'iso_3166_1'], ['literal', highlightedCountryCodes]],
+    [highlightedCountryCodes]
   );
 
   const onHover = useCallback(
@@ -87,12 +91,22 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
             visitCount: visit.entries.length,
             dates: dates.slice(0, 5), // Show up to 5 dates
           });
+        } else if (countryCode === homeCountry) {
+          const country = countries.find((c) => c.code === countryCode);
+          setHoverInfo({
+            longitude: event.lngLat.lng,
+            latitude: event.lngLat.lat,
+            countryName: country?.name || countryCode,
+            countryCode,
+            visitCount: 0,
+            dates: [],
+          });
         }
       } else {
         setHoverInfo(null);
       }
     },
-    [visitsByCode]
+    [visitsByCode, homeCountry]
   );
 
   const onClick = useCallback(
@@ -140,7 +154,7 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
           source-layer="country_boundaries"
           filter={filter}
           paint={{
-            'fill-color': '#3b82f6',
+            'fill-color': ['case', ['==', ['get', 'iso_3166_1'], homeCountry], '#10b981', '#3b82f6'],
             'fill-opacity': 0.6,
           }}
         />
@@ -150,7 +164,7 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
           source-layer="country_boundaries"
           filter={filter}
           paint={{
-            'line-color': '#1d4ed8',
+            'line-color': ['case', ['==', ['get', 'iso_3166_1'], homeCountry], '#047857', '#1d4ed8'],
             'line-width': 1,
           }}
         />

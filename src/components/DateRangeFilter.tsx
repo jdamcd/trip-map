@@ -77,18 +77,18 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Period:</span>
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="w-12 shrink-0 text-sm text-gray-500 dark:text-gray-400">Period</span>
 
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2">
         {presets.map(({ value, label }) => (
           <button
             key={value}
             onClick={() => handlePresetChange(value)}
-            className={`px-3 py-1 text-sm rounded ${
+            className={`px-3 py-1 text-sm rounded border ${
               currentPreset === value
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
             }`}
           >
             {label}
