@@ -2,6 +2,8 @@
 
 A visual travel history tracker that extracts trips from your calendar.
 
+![tripm.app](screenshot.png)
+
 ## Features
 
 - **Calendar import**: Import trips from .ics calendar files, or paste iCal data directly
