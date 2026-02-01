@@ -1,5 +1,5 @@
-// IATA airport codes mapped to ISO 3166-1 alpha-2 country codes
-// Covers major international airports
+// Location to country code mappings for travel detection
+// Includes IATA airport codes, major cities, and international rail stations
 
 export const airportToCountry: Record<string, string> = {
   // United States
@@ -292,4 +292,37 @@ export const cityToCountry: Record<string, string> = {
   'quito': 'EC', 'galapagos': 'EC', 'guayaquil': 'EC',
   'caracas': 'VE', 'la paz': 'BO', 'uyuni': 'BO', 'asuncion': 'PY',
   'montevideo': 'UY',
+};
+
+// Major international rail stations (cross-border arrival points)
+export const trainStationToCountry: Record<string, string> = {
+  // UK - Eurostar terminal
+  'st pancras': 'GB',
+
+  // France - Eurostar/Thalys/TGV international hubs
+  'gare du nord': 'FR', 'gare de lyon': 'FR',
+
+  // Belgium - Eurostar/Thalys hub
+  'bruxelles-midi': 'BE', 'brussels midi': 'BE', 'brussels south': 'BE',
+  'brussel-zuid': 'BE',
+
+  // Netherlands - Eurostar/Thalys/ICE hub
+  'amsterdam centraal': 'NL', 'rotterdam centraal': 'NL',
+
+  // Germany - ICE international hubs
+  'frankfurt hbf': 'DE', 'frankfurt hauptbahnhof': 'DE',
+  'cologne hbf': 'DE', 'koln hbf': 'DE',
+
+  // Switzerland - international rail hub
+  'zurich hb': 'CH', 'zürich hb': 'CH',
+  'geneva cornavin': 'CH', 'geneve cornavin': 'CH',
+
+  // Italy - TGV/international connections
+  'milano centrale': 'IT', 'milan centrale': 'IT',
+
+  // Spain - TGV from France
+  'barcelona sants': 'ES',
+
+  // Austria - international connections
+  'wien hauptbahnhof': 'AT', 'vienna hauptbahnhof': 'AT',
 };

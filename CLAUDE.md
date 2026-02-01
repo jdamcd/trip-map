@@ -33,7 +33,7 @@ npm run test:run  # Run tests once
 - `src/lib/calendar-parser.ts` - iCal parsing using ical.js
 - `src/lib/country-extractor.ts` - Travel event detection and country extraction
 - `src/lib/storage.ts` - localStorage persistence and JSON export/import
-- `src/data/airport-codes.ts` - IATA codes and city name mappings
+- `src/data/location-codes.ts` - IATA codes, city names, and train station mappings
 - `src/data/countries.ts` - Country code to name mappings
 
 ### Data Types (src/types.ts)
@@ -45,12 +45,22 @@ npm run test:run  # Run tests once
 
 ## Testing
 
-Tests are in `src/lib/country-extractor.test.ts` covering:
-- Airport code extraction
+Unit tests in `src/lib/country-extractor.test.ts` cover:
+- Airport code and train station detection
 - Country/city name matching
-- French "la" false positive prevention (2-letter codes require uppercase)
-- Travel event detection
+- Geographic disambiguation (Paris TX ≠ Paris FR)
+- Flight number pattern detection
+- Virtual event filtering
+- Compound city names (New York vs York)
+- 2-letter codes require uppercase (LA, SF, DC)
 - Visit merging logic
+
+Integration tests in `src/lib/integration.test.ts` cover:
+- Calendar parsing with real .ics fixture
+- Full extraction pipeline
+- JSON export/import cycle
+
+Test fixture: `test-calendar.ics` contains sample events exercising all matching criteria.
 
 ## Environment Variables
 
@@ -60,4 +70,6 @@ Tests are in `src/lib/country-extractor.test.ts` covering:
 
 - The app uses Tailwind CSS v4 with the Vite plugin
 - MapBox country boundaries use ISO 3166-1 alpha-2 codes
-- 2-letter city abbreviations (LA, SF, DC) require uppercase to avoid false positives
+- Travel detection uses keywords, airport codes, flight numbers, train stations, and multi-day heuristics
+- Virtual/remote events are filtered out even if they mention locations
+- US/Canadian cities with international namesakes are disambiguated (e.g., "Paris, TX" won't match France)

@@ -423,4 +423,143 @@ DESCRIPTION:Staying at a hotel in Berlin
 LOCATION:Berlin\, Germany
 UID:fixture-2025-30b@tripmap
 END:VEVENT
+BEGIN:VEVENT
+DTSTART:20231120T080000Z
+DTEND:20231120T110000Z
+SUMMARY:Eurostar to Paris
+DESCRIPTION:Taking Eurostar from St Pancras to Gare du Nord
+LOCATION:St Pancras International
+UID:fixture-train-01@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20231120T140000Z
+DTEND:20231123T100000Z
+SUMMARY:Paris hotel
+DESCRIPTION:Short trip to Paris via Eurostar
+LOCATION:Paris\, France
+UID:fixture-train-02@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240215T090000Z
+DTEND:20240215T120000Z
+SUMMARY:Thalys to Brussels
+DESCRIPTION:Train from Amsterdam Centraal to Brussels Midi
+LOCATION:Amsterdam Centraal
+UID:fixture-train-03@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240215T140000Z
+DTEND:20240218T100000Z
+SUMMARY:Brussels weekend
+DESCRIPTION:Weekend in Brussels
+LOCATION:Brussels\, Belgium
+UID:fixture-train-04@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230515T060000Z
+DTEND:20230515T080000Z
+SUMMARY:BA175 to New York
+DESCRIPTION:Business trip to NYC
+UID:fixture-flightnum-01@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230515T140000Z
+DTEND:20230519T100000Z
+SUMMARY:NYC meetings
+DESCRIPTION:Business meetings in Manhattan
+LOCATION:New York\, USA
+UID:fixture-flightnum-02@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230901T100000Z
+DTEND:20230901T140000Z
+SUMMARY:EK205 Dubai
+DESCRIPTION:Flight to Dubai with Emirates
+UID:fixture-flightnum-03@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230901T180000Z
+DTEND:20230906T100000Z
+SUMMARY:Dubai stay
+DESCRIPTION:Holiday in Dubai
+LOCATION:Dubai\, UAE
+UID:fixture-flightnum-04@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230601T140000Z
+DTEND:20230601T150000Z
+SUMMARY:Virtual meeting with Paris team
+DESCRIPTION:Zoom call to discuss Q3 plans
+LOCATION:Remote
+UID:fixture-virtual-01@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230715T090000Z
+DTEND:20230715T100000Z
+SUMMARY:Teams call with Tokyo office
+DESCRIPTION:Monthly sync with Japan team
+UID:fixture-virtual-02@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240301T100000Z
+DTEND:20240301T110000Z
+SUMMARY:Webinar: Barcelona conference highlights
+DESCRIPTION:Online replay of the Barcelona conference
+UID:fixture-virtual-03@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20230801T080000Z
+DTEND:20230805T180000Z
+SUMMARY:Trip to Paris\, Texas
+DESCRIPTION:Visiting relatives in Paris TX
+LOCATION:Paris\, Texas
+UID:fixture-disambig-01@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20231001T080000Z
+DTEND:20231003T180000Z
+SUMMARY:Conference in Dublin OH
+DESCRIPTION:Tech conference at the Dublin Convention Center
+LOCATION:Dublin\, Ohio
+UID:fixture-disambig-02@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240501T080000Z
+DTEND:20240504T180000Z
+SUMMARY:Visit to London\, Ontario
+DESCRIPTION:Family visit in London ON
+LOCATION:London\, Ontario\, Canada
+UID:fixture-disambig-03@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240601T060000Z
+DTEND:20240601T090000Z
+SUMMARY:QF1 to Singapore
+DESCRIPTION:Qantas flight to Singapore
+UID:fixture-flightnum-05@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20240601T140000Z
+DTEND:20240605T100000Z
+SUMMARY:Singapore stopover
+DESCRIPTION:Few days in Singapore before continuing
+LOCATION:Singapore
+UID:fixture-flightnum-06@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20241101T080000Z
+DTEND:20241101T100000Z
+SUMMARY:ICE train to Zurich
+DESCRIPTION:Taking ICE from Frankfurt Hbf to Zurich HB
+LOCATION:Frankfurt Hauptbahnhof
+UID:fixture-train-05@tripmap
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20241101T140000Z
+DTEND:20241105T100000Z
+SUMMARY:Zurich stay
+DESCRIPTION:Business trip to Zurich
+LOCATION:Zurich\, Switzerland
+UID:fixture-train-06@tripmap
+END:VEVENT
 END:VCALENDAR

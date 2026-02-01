@@ -126,6 +126,107 @@ describe('extractCountryVisits', () => {
     expect(visits).toHaveLength(0);
   });
 
+  it('detects flight numbers as travel indicator', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'BA175 to New York',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-15'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(1);
+    expect(visits[0].countryCode).toBe('US');
+  });
+
+  it('ignores virtual events even with location mentions', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Virtual meeting with Paris team',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-20'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(0);
+  });
+
+  it('ignores Zoom calls even with location mentions', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Zoom call with Tokyo office',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-20'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(0);
+  });
+
+  it('does not match Paris, Texas as France', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Trip to Paris, Texas',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-18'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    // Should not match France because of ", Texas" disambiguation
+    expect(visits).toHaveLength(0);
+  });
+
+  it('does not match Dublin, Ohio as Ireland', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Conference in Dublin OH',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-18'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(0);
+  });
+
+  it('does not match York (GB) when New York is in the text', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Trip to New York',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-20'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(1);
+    expect(visits[0].countryCode).toBe('US');
+  });
+
+  it('detects train stations as travel indicator', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Eurostar from St Pancras',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-18'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(1);
+    expect(visits[0].countryCode).toBe('GB');
+  });
+
+  it('detects Gare du Nord as France', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Arriving at Gare du Nord',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-18'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(1);
+    expect(visits[0].countryCode).toBe('FR');
+  });
+
   it('merges overlapping entries for the same country', () => {
     const events: CalendarEvent[] = [
       createEvent({
