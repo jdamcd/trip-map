@@ -291,7 +291,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 mt-auto">
         <div className="max-w-7xl mx-auto text-center text-sm text-gray-500 dark:text-gray-400">
-          All data is processed locally in your browser. Use import / export to back up your trip history.
+          All data is processed locally in your browser. Use import / export to back up your trip history. <a href="https://github.com/jdamcd/trip-map" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Source code on GitHub</a>.
         </div>
       </footer>
     </div>

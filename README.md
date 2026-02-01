@@ -1,6 +1,6 @@
 # tripm.app
 
-A visual travel history tracker that extracts trips from your calendar.
+A visual travel history based on events in your calendar.
 
 ![tripm.app](screenshot.png)
 
@@ -12,10 +12,9 @@ A visual travel history tracker that extracts trips from your calendar.
   - Hotel and accommodation bookings
   - Multi-day events with country or city names
   - Travel keywords (flight, hotel, trip, etc.)
-- **Interactive world map**: View visited countries on an interactive world map
+- **Map**: View visited countries on an interactive world map
 - **Trip management**: Add, edit, and delete trips manually
-- **Date filtering**: Filter trips by date range
-- **Home country**: Set a home country to exclude from visit counts
+- **Filters**: Filter trips by date and exclude events from your home country
 - **Export/import**: Back up and restore your trip history
 
 ## Local development
@@ -53,7 +52,6 @@ npm run build
 - Tailwind CSS v4
 - MapBox GL JS via react-map-gl
 - ical.js for calendar parsing
-- Vitest for testing
 
 ## License
 

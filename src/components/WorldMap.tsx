@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map as MapGL, Layer, Source, Popup } from 'react-map-gl/mapbox';
 import type { MapLayerMouseEvent } from 'react-map-gl/mapbox';
+import type { MapRef } from '@vis.gl/react-mapbox';
 import type { CountryVisit, VisitEntry } from '../types';
-import { countries } from '../data/countries';
+import { countries, countryCoordinates } from '../data/countries';
 import { format } from 'date-fns';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -35,6 +36,7 @@ function useDarkMode() {
 
 export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps) {
   const isDark = useDarkMode();
+  const mapRef = useRef<MapRef>(null);
   const [hoverInfo, setHoverInfo] = useState<{
     longitude: number;
     latitude: number;
@@ -62,7 +64,12 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
   }, [visits, homeCountry]);
 
   const filter = useMemo(
-    () => ['in', ['get', 'iso_3166_1'], ['literal', highlightedCountryCodes]],
+    () => [
+      'all',
+      ['in', ['get', 'iso_3166_1'], ['literal', highlightedCountryCodes]],
+      // Filter by worldview to avoid duplicate polygons causing opacity stacking
+      ['any', ['==', ['get', 'worldview'], 'all'], ['in', 'US', ['get', 'worldview']]],
+    ],
     [highlightedCountryCodes]
   );
 
@@ -122,17 +129,30 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
     [onCountryClick, visitsByCode]
   );
 
+  useEffect(() => {
+    if (!homeCountry || !mapRef.current) return;
+    const coords = countryCoordinates[homeCountry];
+    if (!coords) return;
+    mapRef.current.flyTo({ center: coords, zoom: 3, duration: 1000 });
+  }, [homeCountry]);
+
+  const initialViewState = useMemo(() => {
+    if (homeCountry) {
+      const coords = countryCoordinates[homeCountry];
+      if (coords) return { longitude: coords[0], latitude: coords[1], zoom: 3 };
+    }
+    return { longitude: 0, latitude: 20, zoom: 1.75 };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const mapStyle = isDark
     ? 'mapbox://styles/mapbox/dark-v11'
     : 'mapbox://styles/mapbox/light-v11';
 
   return (
     <MapGL
-      initialViewState={{
-        longitude: 0,
-        latitude: 20,
-        zoom: 1.75,
-      }}
+      ref={mapRef}
+      initialViewState={initialViewState}
       minZoom={1.75}
       maxZoom={5}
       style={{ width: '100%', height: '100%' }}
