@@ -201,6 +201,20 @@ describe('extractCountryVisits', () => {
     expect(visits[0].countryCode).toBe('US');
   });
 
+  it('only detects flight numbers in summary, not description or location', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'Local event',
+        description: 'Reference: AB123',
+        location: '123 Main St, London SW1A 1AA',
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-15'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(0);
+  });
+
   it('detects train stations as travel indicator', () => {
     const events: CalendarEvent[] = [
       createEvent({

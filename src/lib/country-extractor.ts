@@ -26,7 +26,7 @@ const HOTEL_KEYWORDS = [
 ];
 
 const TRAVEL_KEYWORDS = [
-  'trip', 'travel', 'vacation', 'holiday', 'visit', 'tour',
+  'trip', 'travel', 'vacation', 'holiday', 'visit',
   'excursion', 'journey', 'abroad'
 ];
 
@@ -173,7 +173,7 @@ function isTravelEvent(event: CalendarEvent): boolean {
   const hasHotelKeyword = HOTEL_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
   const hasTravelKeyword = TRAVEL_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
   const hasAirportCode = extractAirportCodes(fullText).length > 0;
-  const hasFlightNum = hasFlightNumber(fullText);
+  const hasFlightNum = hasFlightNumber(event.summary);
 
   if (hasFlightKeyword || hasHotelKeyword || hasTravelKeyword || hasAirportCode || hasFlightNum) {
     return true;
