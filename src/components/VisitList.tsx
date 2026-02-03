@@ -3,6 +3,15 @@ import { format } from 'date-fns';
 import type { CountryVisit, DateRange, VisitEntry } from '../types';
 import { DateRangeFilter } from './DateRangeFilter';
 
+function getCountryFlag(countryCode: string): string {
+  // Convert country code to flag emoji using Regional Indicator Symbols
+  return countryCode
+    .toUpperCase()
+    .split('')
+    .map((char) => String.fromCodePoint(0x1f1e6 + char.charCodeAt(0) - 65))
+    .join('');
+}
+
 interface VisitListProps {
   visits: CountryVisit[];
   dateRange: DateRange;
@@ -139,7 +148,9 @@ export function VisitList({
                       >
                         ▶
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-white">{visit.countryName}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {getCountryFlag(visit.countryCode)} {visit.countryName}
+                      </span>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         ({visit.entries.length} trip
                         {visit.entries.length !== 1 ? 's' : ''})
