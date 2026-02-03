@@ -62,6 +62,38 @@ const COMPOUND_CITY_NAMES: Record<string, string[]> = {
   delhi: ['new delhi'],
 };
 
+// Major international airline IATA/ICAO codes for flight number validation
+const AIRLINE_CODES = new Set([
+  // North America
+  'AA', 'UA', 'DL', 'WN', 'B6', 'AS', 'NK', 'F9', 'HA', // US
+  'AC', 'WS', 'TS', // Canada
+  'AM', 'VB', // Mexico
+  // Europe - Flag carriers
+  'BA', 'VS', 'AF', 'LH', 'KL', 'IB', 'AZ', 'SK', 'AY', 'LX', 'OS', 'SN', 'TP', 'EI',
+  'LO', 'OK', 'RO', 'BT', 'OU', 'JU', 'PS', 'SU', 'FI', 'DY', 'A3', 'UX',
+  // Europe - Low cost
+  'FR', 'U2', 'W6', 'VY', 'EW', 'HV', 'LS', 'BY', 'ZT',
+  // Middle East & Africa
+  'EK', 'QR', 'EY', 'TK', 'MS', 'GF', 'WY', 'SV', 'RJ', 'ME', 'KU', 'PC',
+  'ET', 'SA', 'KQ', 'AT', 'WB',
+  // Asia - East
+  'CX', 'SQ', 'JL', 'NH', 'KE', 'OZ', 'CI', 'BR', 'PR', 'MH', 'TG', 'VN',
+  'GA', 'BI', '5J', 'AK', 'FD', 'QZ',
+  'CA', 'MU', 'CZ', 'HU', '3U', 'ZH', 'MF', 'SC', // China
+  // Asia - South
+  'AI', 'UK', '6E', 'SG', 'G8', // India
+  'PK', 'UL', 'BG', 'RA', // South Asia
+  // Oceania
+  'QF', 'NZ', 'VA', 'JQ', 'FJ',
+  // Latin America
+  'LA', 'AV', 'CM', 'G3', 'AD', 'AR', 'H2',
+  // 3-letter ICAO codes (some booking systems use these)
+  'SIA', 'UAE', 'ETD', 'QTR', 'THY', 'KAL', 'CAL', 'EVA', 'ANA',
+  'EZY', 'EJU', 'RYR', 'BAW', 'DLH', 'AFR', 'KLM', 'DAL', 'AAL', 'UAL',
+  // Defunct airlines (for historical calendar imports)
+  'AB', 'ZB', 'MT', 'BE', 'VX', 'WW', '9W', 'IG', '4U',
+]);
+
 // Check if a short city name should be skipped because a compound form exists in the text
 function isPartOfCompoundCity(text: string, cityName: string): boolean {
   const lowerText = text.toLowerCase();
@@ -83,12 +115,17 @@ function extractAirportCodes(text: string): string[] {
     .filter((code): code is string => code !== undefined && code in airportToCountry);
 }
 
-// Detect flight number patterns like BA123, UA1234, EK5, SIA321
+// Detect flight number patterns like BA123, UA1234, EK5
 function hasFlightNumber(text: string): boolean {
-  // 2-letter airline code + 1-4 digits (most common: BA, AA, UA, EK, QF, etc.)
-  // or 3-letter airline code + 1-4 digits (UAE, SIA, etc.)
-  const flightNumberRegex = /\b[A-Z]{2,3}\d{1,4}\b/;
-  return flightNumberRegex.test(text);
+  const flightNumberRegex = /\b([A-Z]{2,3})(\d{1,4})\b/g;
+  let match;
+  while ((match = flightNumberRegex.exec(text)) !== null) {
+    const airlineCode = match[1];
+    if (AIRLINE_CODES.has(airlineCode)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Check if a city name is followed by a US state or Canadian province

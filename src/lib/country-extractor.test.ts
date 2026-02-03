@@ -215,6 +215,24 @@ describe('extractCountryVisits', () => {
     expect(visits).toHaveLength(0);
   });
 
+  it('only matches flight numbers from known airline codes', () => {
+    const events: CalendarEvent[] = [
+      createEvent({
+        summary: 'BA123 to New York', // Valid airline code
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-15'),
+      }),
+      createEvent({
+        summary: 'XY456 to Paris', // Invalid airline code
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-15'),
+      }),
+    ];
+    const visits = extractCountryVisits(events);
+    expect(visits).toHaveLength(1);
+    expect(visits[0].countryCode).toBe('US');
+  });
+
   it('detects train stations as travel indicator', () => {
     const events: CalendarEvent[] = [
       createEvent({
