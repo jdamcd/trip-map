@@ -164,11 +164,11 @@ export function VisitList({
                   </div>
 
                   {isExpanded && (
-                    <ul className="bg-gray-50 dark:bg-gray-900/50 pl-8 pr-3 pb-2">
+                    <ul className="bg-gray-50 dark:bg-gray-900/50 pl-8 pr-3 py-1">
                       {[...visit.entries].sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()).map((entry) => (
                         <li
                           key={entry.id}
-                          className="py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                          className="py-3 border-b border-gray-100 dark:border-gray-700 last:border-0"
                         >
                           {editingEntry?.countryCode === visit.countryCode &&
                           editingEntry?.entryId === entry.id ? (
