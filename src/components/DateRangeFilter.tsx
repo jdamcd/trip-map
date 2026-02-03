@@ -78,26 +78,28 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="w-12 shrink-0 text-sm text-gray-500 dark:text-gray-400">Period</span>
+      <div className="flex items-center gap-2">
+        <span className="w-12 shrink-0 text-sm text-gray-500 dark:text-gray-400">Period</span>
 
-      <div className="flex flex-wrap gap-2">
-        {presets.map(({ value, label }) => (
-          <button
-            key={value}
-            onClick={() => handlePresetChange(value)}
-            className={`px-3 py-1 text-sm rounded border ${
-              currentPreset === value
-                ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
-                : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+        <div className="flex flex-wrap gap-2">
+          {presets.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => handlePresetChange(value)}
+              className={`px-3 py-1 text-sm rounded border ${
+                currentPreset === value
+                  ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {showCustom && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-14">
           <input
             type="date"
             value={format(dateRange.start, 'yyyy-MM-dd')}

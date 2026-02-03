@@ -159,8 +159,8 @@ function App() {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">tripm.app</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">tripm.app</h1>
+          <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
             Extract travel history from your calendar
           </p>
         </div>
@@ -235,15 +235,19 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                <span className="font-semibold text-blue-600 dark:text-blue-400">
-                  {totalCountries}
-                </span>{' '}
-                {totalCountries === 1 ? 'country' : 'countries'} /{' '}
-                <span className="font-semibold text-blue-600 dark:text-blue-400">
-                  {totalVisits}
-                </span>{' '}
-                {totalVisits === 1 ? 'trip' : 'trips'}
+              <div className="text-sm text-gray-600 dark:text-gray-300 flex flex-wrap gap-x-2 gap-y-0.5">
+                <span className="whitespace-nowrap">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    {totalCountries}
+                  </span>{'\u00A0'}
+                  {totalCountries === 1 ? 'country' : 'countries'}
+                </span>
+                <span className="whitespace-nowrap">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    {totalVisits}
+                  </span>{'\u00A0'}
+                  {totalVisits === 1 ? 'trip' : 'trips'}
+                </span>
               </div>
             </div>
           </div>
@@ -290,7 +294,7 @@ function App() {
 
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 mt-auto">
-        <div className="max-w-7xl mx-auto text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="max-w-7xl mx-auto text-center text-xs md:text-sm text-gray-500 dark:text-gray-400">
           All data is processed locally in your browser. Use import / export to back up your trip history. <a href="https://github.com/jdamcd/trip-map" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Source code on GitHub</a>.
         </div>
       </footer>
