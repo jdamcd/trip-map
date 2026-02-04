@@ -36,6 +36,25 @@ const VIRTUAL_KEYWORDS = [
   'video call', 'conference call', 'webex', 'google meet'
 ];
 
+// Pre-compiled regex patterns for performance (built once at module load)
+function buildKeywordRegex(keywords: string[]): RegExp {
+  const escaped = keywords.map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  return new RegExp(`\\b(${escaped.join('|')})\\b`, 'i');
+}
+
+const FLIGHT_REGEX = buildKeywordRegex(FLIGHT_KEYWORDS);
+const HOTEL_REGEX = buildKeywordRegex(HOTEL_KEYWORDS);
+const TRAVEL_REGEX = buildKeywordRegex(TRAVEL_KEYWORDS);
+const VIRTUAL_REGEX = buildKeywordRegex(VIRTUAL_KEYWORDS);
+
+// Pre-build country and city lookup structures for fast matching
+const COUNTRY_NAMES_LOWER = countries.map(c => c.name.toLowerCase());
+const COUNTRY_REGEX = buildKeywordRegex(countries.map(c => c.name));
+const CITY_ENTRIES = Object.entries(cityToCountry);
+const CITY_REGEX = buildKeywordRegex(CITY_ENTRIES.filter(([city]) => city.length > 2).map(([city]) => city));
+const SHORT_CITY_CODES = new Map(CITY_ENTRIES.filter(([city]) => city.length <= 2));
+const TRAIN_STATION_REGEX = buildKeywordRegex(Object.keys(trainStationToCountry));
+
 // US states and Canadian provinces that share city names with international destinations
 const DISAMBIGUATION_PATTERNS: Record<string, string[]> = {
   // US states (full names and abbreviations)
@@ -108,20 +127,31 @@ function isPartOfCompoundCity(text: string, cityName: string): boolean {
   return false;
 }
 
+// Pre-compiled regexes for airport codes and flight numbers
+const AIRPORT_CODE_REGEX = /(?:^|[^A-Za-z0-9])([A-Z]{3})(?:[^A-Za-z0-9]|$)/g;
+const THREE_LETTER_EXTRACT = /[A-Z]{3}/;
+const FLIGHT_NUMBER_REGEX = /\b([A-Z]{2,3})(\d{1,4})\b/g;
+
 function extractAirportCodes(text: string): string[] {
-  const matches = text.match(/(?:^|[^A-Za-z0-9])([A-Z]{3})(?:[^A-Za-z0-9]|$)/g) || [];
+  // Quick check - must have at least one 3-letter uppercase sequence
+  if (!/[A-Z]{3}/.test(text)) return [];
+
+  AIRPORT_CODE_REGEX.lastIndex = 0; // Reset regex state
+  const matches = text.match(AIRPORT_CODE_REGEX) || [];
   return matches
-    .map((match) => match.match(/[A-Z]{3}/)?.[0])
+    .map((match) => match.match(THREE_LETTER_EXTRACT)?.[0])
     .filter((code): code is string => code !== undefined && code in airportToCountry);
 }
 
 // Detect flight number patterns like BA123, UA1234, EK5
 function hasFlightNumber(text: string): boolean {
-  const flightNumberRegex = /\b([A-Z]{2,3})(\d{1,4})\b/g;
+  // Quick check - must have uppercase letter followed by digit
+  if (!/[A-Z]\d/.test(text)) return false;
+
+  FLIGHT_NUMBER_REGEX.lastIndex = 0; // Reset regex state
   let match;
-  while ((match = flightNumberRegex.exec(text)) !== null) {
-    const airlineCode = match[1];
-    if (AIRLINE_CODES.has(airlineCode)) {
+  while ((match = FLIGHT_NUMBER_REGEX.exec(text)) !== null) {
+    if (AIRLINE_CODES.has(match[1])) {
       return true;
     }
   }
@@ -156,39 +186,57 @@ function matchesWholeWord(text: string, word: string, caseSensitive = false): bo
   return regex.test(normalizedText);
 }
 
+// Fast check for any location name (used for quick filtering)
+function hasLocationNameFast(text: string): boolean {
+  if (COUNTRY_REGEX.test(text)) return true;
+  if (CITY_REGEX.test(text)) return true;
+  if (TRAIN_STATION_REGEX.test(text)) return true;
+  // Check 2-letter city codes (require uppercase)
+  for (const [code] of SHORT_CITY_CODES) {
+    if (text.includes(code)) return true;
+  }
+  return false;
+}
+
 function extractCountriesFromText(text: string, originalText?: string): string[] {
   const lowerText = text.toLowerCase();
   const fullText = originalText || text;
   const foundCountries = new Set<string>();
 
-  for (const country of countries) {
-    if (matchesWholeWord(lowerText, country.name.toLowerCase())) {
-      foundCountries.add(country.code);
+  // Use pre-compiled regex for initial fast check, then identify specific matches
+  if (COUNTRY_REGEX.test(fullText)) {
+    for (let i = 0; i < countries.length; i++) {
+      if (lowerText.includes(COUNTRY_NAMES_LOWER[i])) {
+        // Verify with word boundary check
+        if (matchesWholeWord(lowerText, COUNTRY_NAMES_LOWER[i])) {
+          foundCountries.add(countries[i].code);
+        }
+      }
     }
   }
 
-  for (const [city, countryCode] of Object.entries(cityToCountry)) {
-    // For 2-letter abbreviations (like LA, SF, DC), require uppercase in original text
-    // to avoid false positives with common words (e.g., French "la")
+  // Check cities - use includes() as fast pre-filter
+  for (const [city, countryCode] of CITY_ENTRIES) {
     if (city.length <= 2) {
-      if (matchesWholeWord(fullText, city.toUpperCase(), true)) {
+      // For 2-letter abbreviations, require uppercase
+      if (fullText.includes(city.toUpperCase())) {
         foundCountries.add(countryCode);
       }
-    } else if (matchesWholeWord(lowerText, city)) {
-      // Skip if this city is part of a compound name (e.g., "York" when "New York" is present)
-      if (isPartOfCompoundCity(fullText, city)) {
-        continue;
-      }
-      // Check for disambiguation (e.g., "Paris, Texas" should not match France)
-      if (!isDisambiguatedCity(fullText, city)) {
-        foundCountries.add(countryCode);
+    } else if (lowerText.includes(city.toLowerCase())) {
+      // Fast pre-filter passed, now verify with word boundary
+      if (matchesWholeWord(lowerText, city)) {
+        if (isPartOfCompoundCity(fullText, city)) continue;
+        if (!isDisambiguatedCity(fullText, city)) {
+          foundCountries.add(countryCode);
+        }
       }
     }
   }
 
-  // Also check train stations
+  // Check train stations with fast pre-filter
   for (const [station, countryCode] of Object.entries(trainStationToCountry)) {
-    if (matchesWholeWord(lowerText, station.toLowerCase())) {
+    const stationLower = station.toLowerCase();
+    if (lowerText.includes(stationLower) && matchesWholeWord(lowerText, stationLower)) {
       foundCountries.add(countryCode);
     }
   }
@@ -198,30 +246,27 @@ function extractCountriesFromText(text: string, originalText?: string): string[]
 
 function isTravelEvent(event: CalendarEvent): boolean {
   const fullText = `${event.summary} ${event.description || ''} ${event.location || ''}`;
-  const searchText = fullText.toLowerCase();
 
-  // Skip virtual/remote events even if they mention a location
-  const isVirtual = VIRTUAL_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
-  if (isVirtual) {
+  // Skip virtual/remote events even if they mention a location (fast regex check)
+  if (VIRTUAL_REGEX.test(fullText)) {
     return false;
   }
 
-  const hasFlightKeyword = FLIGHT_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
-  const hasHotelKeyword = HOTEL_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
-  const hasTravelKeyword = TRAVEL_KEYWORDS.some((kw) => matchesWholeWord(searchText, kw));
-  const hasAirportCode = extractAirportCodes(fullText).length > 0;
-  const hasFlightNum = hasFlightNumber(event.summary);
+  // Fast checks using pre-compiled regexes - return early on first match
+  if (FLIGHT_REGEX.test(fullText)) return true;
+  if (HOTEL_REGEX.test(fullText)) return true;
+  if (TRAVEL_REGEX.test(fullText)) return true;
+  if (extractAirportCodes(fullText).length > 0) return true;
+  if (hasFlightNumber(event.summary)) return true;
 
-  if (hasFlightKeyword || hasHotelKeyword || hasTravelKeyword || hasAirportCode || hasFlightNum) {
-    return true;
-  }
-
-  const hasLocationName = extractCountriesFromText(searchText, fullText).length > 0;
+  // Only do expensive location check for multi-day events
   const isMultiDay = event.endDate
     ? event.endDate.getTime() - event.startDate.getTime() > 24 * 60 * 60 * 1000
     : false;
 
-  return hasLocationName && isMultiDay;
+  if (!isMultiDay) return false;
+
+  return hasLocationNameFast(fullText);
 }
 
 function extractCountriesFromEvent(event: CalendarEvent): string[] {
@@ -295,11 +340,30 @@ function mergeOverlappingEntries(entries: VisitEntry[]): VisitEntry[] {
   return merged;
 }
 
-export function extractCountryVisits(events: CalendarEvent[]): CountryVisit[] {
+export function extractCountryVisits(
+  events: CalendarEvent[],
+  onProgress?: (processed: number, total: number) => void
+): CountryVisit[] {
   const visitMap = new Map<string, CountryVisit>();
+  const total = events.length;
+  let lastProgressTime = 0;
+  const PROGRESS_INTERVAL_MS = 100; // Update every 100ms max
 
-  for (const event of events) {
-    if (!isTravelEvent(event)) continue;
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+
+    // Report progress based on time, not count (prevents batching issues)
+    if (onProgress) {
+      const now = Date.now();
+      if (now - lastProgressTime >= PROGRESS_INTERVAL_MS) {
+        onProgress(i, total);
+        lastProgressTime = now;
+      }
+    }
+
+    if (!isTravelEvent(event)) {
+      continue;
+    }
 
     const countryCodes = extractCountriesFromEvent(event);
 
@@ -326,6 +390,11 @@ export function extractCountryVisits(events: CalendarEvent[]): CountryVisit[] {
         });
       }
     }
+  }
+
+  // Final progress update
+  if (onProgress) {
+    onProgress(total, total);
   }
 
   for (const visit of visitMap.values()) {

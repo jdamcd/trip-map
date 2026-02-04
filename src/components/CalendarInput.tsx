@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { parseICalData } from '../lib/calendar-parser';
-import { extractCountryVisits } from '../lib/country-extractor';
+import { useState, useRef, useEffect } from 'react';
 import type { CountryVisit } from '../types';
+import type { WorkerResponse } from '../lib/calendar-worker';
+import CalendarWorker from '../lib/calendar-worker?worker';
 
 type InputMode = 'file' | 'paste';
 
@@ -14,26 +14,65 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
   const [pastedText, setPastedText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<{ processed: number; total: number } | null>(null);
+  const workerRef = useRef<Worker | null>(null);
 
-  const processICalData = (data: string) => {
-    try {
-      const events = parseICalData(data);
-      const visits = extractCountryVisits(events);
+  // Cleanup worker on unmount
+  useEffect(() => {
+    return () => {
+      workerRef.current?.terminate();
+    };
+  }, []);
 
-      if (visits.length === 0) {
-        setError(
-          'No travel-related events found. Try adding events with flight info, hotel bookings, or location data.'
-        );
-        return;
+  const processWithWorker = (data: string) => {
+    // Terminate any existing worker
+    workerRef.current?.terminate();
+
+    // Create new worker
+    const worker = new CalendarWorker();
+    workerRef.current = worker;
+
+    worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+      const response = e.data;
+
+      if (response.type === 'progress') {
+        setProgress({
+          processed: response.eventsProcessed || 0,
+          total: response.totalEvents || 0,
+        });
+      } else if (response.type === 'complete') {
+        setLoading(false);
+        setProgress(null);
+
+        if (!response.visits || response.visits.length === 0) {
+          setError(
+            'No travel-related events found. Try adding events with flight info, hotel bookings, or location data.'
+          );
+          return;
+        }
+
+        onImport(response.visits);
+        setError(null);
+        setPastedText('');
+        worker.terminate();
+      } else if (response.type === 'error') {
+        setLoading(false);
+        setProgress(null);
+        setError(response.error || 'Failed to parse calendar data. Please check the format.');
+        worker.terminate();
       }
+    };
 
-      onImport(visits);
-      setError(null);
-      setPastedText('');
-    } catch (err) {
-      setError('Failed to parse calendar data. Please check the format.');
+    worker.onerror = (err) => {
+      setLoading(false);
+      setProgress(null);
+      setError('Failed to process calendar data.');
       console.error(err);
-    }
+      worker.terminate();
+    };
+
+    // Start processing
+    worker.postMessage({ type: 'process', data });
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,12 +81,12 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
 
     setLoading(true);
     setError(null);
+    setProgress(null);
 
     const reader = new FileReader();
     reader.onload = (event) => {
       const data = event.target?.result as string;
-      processICalData(data);
-      setLoading(false);
+      processWithWorker(data);
     };
     reader.onerror = () => {
       setError('Failed to read file');
@@ -65,8 +104,8 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
 
     setLoading(true);
     setError(null);
-    processICalData(pastedText);
-    setLoading(false);
+    setProgress(null);
+    processWithWorker(pastedText);
   };
 
   return (
@@ -94,22 +133,37 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
 
       {mode === 'file' && (
         <div>
-          <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-            <div className="text-center">
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                Upload an .ics file exported from your calendar
-              </div>
-              <div className="text-xs text-gray-400 mt-1">
-                Click to browse
+          {loading ? (
+            <div className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-blue-400 dark:border-blue-500 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+                </div>
+                <div className="text-sm text-blue-600 dark:text-blue-400 font-medium tabular-nums">
+                  {progress && progress.total > 0
+                    ? `${Math.round((progress.processed / progress.total) * 100)}% of ${progress.total.toLocaleString()} events`
+                    : 'Processing...'}
+                </div>
               </div>
             </div>
-            <input
-              type="file"
-              accept=".ics,.ical,text/calendar"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </label>
+          ) : (
+            <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+              <div className="text-center">
+                <div className="text-sm text-gray-600 dark:text-gray-300">
+                  Upload an .ics file exported from your calendar
+                </div>
+                <div className="text-xs text-gray-400 mt-1">
+                  Click to browse
+                </div>
+              </div>
+              <input
+                type="file"
+                accept=".ics,.ical,text/calendar"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+          )}
         </div>
       )}
 

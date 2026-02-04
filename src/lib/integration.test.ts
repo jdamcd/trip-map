@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { parseICalData } from './calendar-parser';
+import { parseICalData, parseICalDataWithProgress } from './calendar-parser';
 import { extractCountryVisits } from './country-extractor';
 import { exportToJson } from './storage';
 import type { CountryVisit } from '../types';
@@ -26,6 +26,24 @@ describe('calendar integration', () => {
       expect(parisHotel!.startDate).toBeInstanceOf(Date);
       expect(parisHotel!.endDate).toBeInstanceOf(Date);
     });
+
+    it('reports progress during parsing', () => {
+      const progressCalls: Array<{ current: number; total: number }> = [];
+      const result = parseICalDataWithProgress(icsData, (current, total) => {
+        progressCalls.push({ current, total });
+      });
+
+      // Should produce same results as non-progress version
+      expect(result.length).toBe(events.length);
+
+      // Should have reported progress
+      expect(progressCalls.length).toBeGreaterThan(0);
+
+      // Final call should have correct total
+      const finalCall = progressCalls[progressCalls.length - 1];
+      expect(finalCall.current).toBe(finalCall.total);
+      expect(finalCall.total).toBe(events.length);
+    });
   });
 
   describe('full pipeline', () => {
@@ -44,6 +62,24 @@ describe('calendar integration', () => {
       // Sanity check total count
       expect(visits.length).toBeGreaterThanOrEqual(18);
       expect(visits.length).toBeLessThanOrEqual(25);
+    });
+
+    it('reports progress during country extraction', () => {
+      const progressCalls: Array<{ processed: number; total: number }> = [];
+      const result = extractCountryVisits(events, (processed, total) => {
+        progressCalls.push({ processed, total });
+      });
+
+      // Should produce same results
+      expect(result.length).toBe(visits.length);
+
+      // Should have reported progress (at least start and end)
+      expect(progressCalls.length).toBeGreaterThan(0);
+
+      // Final call should show all events processed
+      const finalCall = progressCalls[progressCalls.length - 1];
+      expect(finalCall.processed).toBe(events.length);
+      expect(finalCall.total).toBe(events.length);
     });
   });
 
