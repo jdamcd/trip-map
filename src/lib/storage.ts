@@ -37,7 +37,7 @@ export function saveHomeCountry(countryCode: string): void {
 }
 
 export function loadHomeCountry(): string {
-  return localStorage.getItem(HOME_COUNTRY_KEY) || '';
+  return localStorage.getItem(HOME_COUNTRY_KEY) || 'GB';
 }
 
 export function exportToJson(visits: CountryVisit[]): string {
