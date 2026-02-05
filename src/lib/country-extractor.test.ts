@@ -283,7 +283,6 @@ describe('mergeVisits', () => {
   it('merges visits from different countries', () => {
     const existing: CountryVisit[] = [
       {
-        id: '1',
         countryCode: 'FR',
         countryName: 'France',
         entries: [
@@ -298,7 +297,6 @@ describe('mergeVisits', () => {
     ];
     const newVisits: CountryVisit[] = [
       {
-        id: '2',
         countryCode: 'IT',
         countryName: 'Italy',
         entries: [
@@ -318,7 +316,6 @@ describe('mergeVisits', () => {
   it('adds new entries to existing country', () => {
     const existing: CountryVisit[] = [
       {
-        id: '1',
         countryCode: 'FR',
         countryName: 'France',
         entries: [
@@ -333,7 +330,6 @@ describe('mergeVisits', () => {
     ];
     const newVisits: CountryVisit[] = [
       {
-        id: '2',
         countryCode: 'FR',
         countryName: 'France',
         entries: [
@@ -354,7 +350,6 @@ describe('mergeVisits', () => {
   it('skips duplicate entries', () => {
     const existing: CountryVisit[] = [
       {
-        id: '1',
         countryCode: 'FR',
         countryName: 'France',
         entries: [
@@ -370,7 +365,6 @@ describe('mergeVisits', () => {
     ];
     const newVisits: CountryVisit[] = [
       {
-        id: '2',
         countryCode: 'FR',
         countryName: 'France',
         entries: [

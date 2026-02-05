@@ -383,7 +383,6 @@ export function extractCountryVisits(
         visitMap.get(countryCode)!.entries.push(entry);
       } else {
         visitMap.set(countryCode, {
-          id: uuidv4(),
           countryCode,
           countryName: country.name,
           entries: [entry],
@@ -449,7 +448,6 @@ export function createManualVisit(
   if (!country) return null;
 
   return {
-    id: uuidv4(),
     countryCode,
     countryName: country.name,
     entries: [
