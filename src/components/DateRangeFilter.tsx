@@ -39,6 +39,7 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   const handlePresetChange = (preset: PresetOption) => {
     if (preset === 'custom') {
       setShowCustom(true);
+      onChange({ start: subYears(now, 10), end: now });
       return;
     }
 

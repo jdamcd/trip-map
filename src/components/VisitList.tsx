@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { format } from 'date-fns';
 import type { CountryVisit, DateRange, VisitEntry } from '../types';
+import { formatDateRange } from '../lib/dates';
 import { DateRangeFilter } from './DateRangeFilter';
 
 function getCountryFlag(countryCode: string): string {
@@ -85,17 +85,6 @@ export function VisitList({
       }
       return next;
     });
-  };
-
-  const formatDateRange = (entry: VisitEntry) => {
-    const start = format(new Date(entry.startDate), 'MMM d, yyyy');
-    if (entry.endDate) {
-      const end = format(new Date(entry.endDate), 'MMM d, yyyy');
-      if (end !== start) {
-        return `${start} - ${end}`;
-      }
-    }
-    return start;
   };
 
   return (

@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map as MapGL, Layer, Source, Popup } from 'react-map-gl/mapbox';
 import type { MapLayerMouseEvent } from 'react-map-gl/mapbox';
 import type { MapRef } from '@vis.gl/react-mapbox';
-import type { CountryVisit, VisitEntry } from '../types';
+import type { CountryVisit } from '../types';
 import { countries, countryCoordinates } from '../data/countries';
-import { format } from 'date-fns';
+import { formatDateRange } from '../lib/dates';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -83,13 +83,7 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
           const sortedEntries = [...visit.entries].sort(
             (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
           );
-          const dates = sortedEntries.map((e: VisitEntry) => {
-            const start = format(new Date(e.startDate), 'MMM d, yyyy');
-            const end = e.endDate
-              ? format(new Date(e.endDate), 'MMM d, yyyy')
-              : null;
-            return end && end !== start ? `${start} - ${end}` : start;
-          });
+          const dates = sortedEntries.map(formatDateRange);
           setHoverInfo({
             longitude: event.lngLat.lng,
             latitude: event.lngLat.lat,
