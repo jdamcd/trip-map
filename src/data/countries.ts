@@ -1,4 +1,4 @@
-export interface Country {
+interface Country {
   code: string; // ISO 3166-1 alpha-2
   name: string;
 }
@@ -264,6 +264,3 @@ export const countryByCode: Record<string, Country> = Object.fromEntries(
   countries.map((c) => [c.code, c])
 );
 
-export const countryByName: Record<string, Country> = Object.fromEntries(
-  countries.map((c) => [c.name.toLowerCase(), c])
-);

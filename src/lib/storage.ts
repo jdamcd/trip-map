@@ -3,7 +3,7 @@ import type { CountryVisit } from '../types';
 const STORAGE_KEY = 'trip-map-visits';
 const HOME_COUNTRY_KEY = 'trip-map-home-country';
 
-export interface StoredData {
+interface StoredData {
   visits: CountryVisit[];
   version: number;
 }
@@ -23,7 +23,8 @@ export function loadVisits(): CountryVisit[] {
   try {
     const data: StoredData = JSON.parse(raw);
     return data.visits || [];
-  } catch {
+  } catch (e) {
+    console.warn('Failed to parse stored visits:', e);
     return [];
   }
 }

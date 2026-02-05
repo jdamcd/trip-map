@@ -25,8 +25,3 @@ export interface DateRange {
   start: Date;
   end: Date;
 }
-
-export interface AppState {
-  visits: CountryVisit[];
-  dateRange: DateRange;
-}

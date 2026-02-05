@@ -93,12 +93,3 @@ export function parseICalData(icalData: string): CalendarEvent[] {
   return events;
 }
 
-export function filterEventsByDateRange(
-  events: CalendarEvent[],
-  startDate: Date,
-  endDate: Date
-): CalendarEvent[] {
-  return events.filter((event) => {
-    return event.startDate >= startDate && event.startDate <= endDate;
-  });
-}
