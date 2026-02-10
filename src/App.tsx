@@ -317,7 +317,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 mt-auto">
         <div className="max-w-7xl mx-auto text-center text-xs md:text-sm text-gray-500 dark:text-gray-400">
-          All data is processed locally in your browser &middot; <a href="https://github.com/jdamcd/trip-map" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Source code</a> &middot; <a href="#privacy" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Privacy</a> &middot; <a href="#terms" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Terms</a>
+          All data is processed locally in your browser &middot; <a href="https://github.com/jdamcd/trip-map" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Source</a> &middot; <a href="#privacy" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Privacy</a> &middot; <a href="#terms" className="hover:text-gray-700 dark:hover:text-gray-300 underline">Terms</a>
         </div>
       </footer>
     </div>

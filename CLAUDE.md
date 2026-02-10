@@ -26,10 +26,13 @@ npm run test:run  # Run tests once
 
 ### Key Files
 
-- `src/App.tsx` - Main application component, state management
+- `src/App.tsx` - Main application component, state management, hash-based routing
 - `src/components/WorldMap.tsx` - MapBox GL map with country highlighting
 - `src/components/VisitList.tsx` - Sortable list of visited countries
-- `src/components/CalendarInput.tsx` - File upload and paste input for calendar data
+- `src/components/CalendarInput.tsx` - File upload, paste, and Google Calendar import
+- `src/components/LegalPage.tsx` - Renders privacy policy and terms of service from markdown
+- `src/content/privacy.md` - Privacy policy content
+- `src/content/terms.md` - Terms of service content
 - `src/lib/calendar-parser.ts` - iCal parsing using ical.js
 - `src/lib/country-extractor.ts` - Travel event detection and country extraction
 - `src/lib/storage.ts` - localStorage persistence and JSON export/import
@@ -65,6 +68,7 @@ Test fixture: `test-calendar.ics` contains sample events exercising all matching
 ## Environment Variables
 
 - `VITE_MAPBOX_TOKEN` - Required MapBox access token for the map
+- `VITE_GOOGLE_CLIENT_ID` - Optional Google OAuth client ID for Google Calendar import
 
 ## Notes
 
@@ -73,3 +77,6 @@ Test fixture: `test-calendar.ics` contains sample events exercising all matching
 - Travel detection uses keywords, airport codes, flight numbers, train stations, and multi-day heuristics
 - Virtual/remote events are filtered out even if they mention locations
 - US/Canadian cities with international namesakes are disambiguated (e.g., "Paris, TX" won't match France)
+- Hash-based routing: `#privacy` and `#terms` show legal pages, all other hashes show the main app
+- Legal page content lives in markdown files (`src/content/`) rendered with react-markdown
+- Hosted on GitHub Pages — hash routing is used because GH Pages doesn't support SPA path fallback
