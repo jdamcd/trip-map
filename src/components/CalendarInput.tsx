@@ -320,7 +320,7 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
           {googleStep === 'idle' && (
             <button
               onClick={handleGoogleConnect}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-sm text-gray-600 dark:text-gray-300"
+              className="w-full flex items-center justify-center gap-2 px-4 py-[1.35rem] border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-sm text-gray-600 dark:text-gray-300"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -341,6 +341,7 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
                 />
               </svg>
               Connect Google Calendar
+              <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-700 dark:bg-purple-800/50 dark:text-purple-300">Beta</span>
             </button>
           )}
 
@@ -432,15 +433,15 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
         </div>
       )}
 
-      <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-        <p className="font-medium mb-1">Always check for errors. Trips are detected based on:</p>
-        <ul className="list-disc list-inside space-y-0.5">
+      <details className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+        <summary className="font-medium cursor-pointer">Always check for errors. How are trips detected?</summary>
+        <ul className="list-disc ml-7 space-y-0.5 mt-1">
           <li>Flights and events with airport codes (e.g. JFK, LHR)</li>
           <li>Hotel and accommodation bookings</li>
           <li>Multi-day events that include countries or cities</li>
           <li>Events with keywords like "flight", "hotel", or "trip"</li>
         </ul>
-      </div>
+      </details>
     </div>
   );
 }

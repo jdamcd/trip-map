@@ -288,9 +288,9 @@ function App() {
           )}
 
           {/* List and map */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[600px]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[600px]">
             {/* Visit list */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <div className="h-[400px] lg:h-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <VisitList
                 visits={filteredVisits}
                 dateRange={dateRange}
