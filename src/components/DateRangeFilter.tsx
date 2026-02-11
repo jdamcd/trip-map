@@ -13,11 +13,11 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   const now = useMemo(() => new Date(), []);
   const [showCustom, setShowCustom] = useState(false);
 
-  const presets: { value: PresetOption; label: string }[] = [
-    { value: '1y', label: '1 year' },
-    { value: '5y', label: '5 years' },
-    { value: 'all', label: 'All' },
-    { value: 'custom', label: 'Custom' },
+  const presets: { value: PresetOption; label: string; shortLabel: string }[] = [
+    { value: '1y', label: '1 year', shortLabel: '1Y' },
+    { value: '5y', label: '5 years', shortLabel: '5Y' },
+    { value: 'all', label: 'All', shortLabel: 'All' },
+    { value: 'custom', label: 'Custom', shortLabel: 'Custom' },
   ];
 
   const currentPreset = useMemo((): PresetOption => {
@@ -83,7 +83,7 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
         <span className="w-12 shrink-0 text-sm text-gray-500 dark:text-gray-400">Period</span>
 
         <div className="flex flex-wrap gap-2">
-          {presets.map(({ value, label }) => (
+          {presets.map(({ value, label, shortLabel }) => (
             <button
               key={value}
               onClick={() => handlePresetChange(value)}
@@ -93,7 +93,8 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
                   : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500'
               }`}
             >
-              {label}
+              <span className="sm:hidden">{shortLabel}</span>
+              <span className="hidden sm:inline">{label}</span>
             </button>
           ))}
         </div>
