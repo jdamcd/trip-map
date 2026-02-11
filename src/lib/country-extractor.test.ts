@@ -398,4 +398,16 @@ describe('createManualVisit', () => {
     const visit = createManualVisit('XX', '2024-01-15T00:00:00.000Z');
     expect(visit).toBeNull();
   });
+
+  it('stores note as eventTitle when provided', () => {
+    const visit = createManualVisit('JP', '2024-01-15T00:00:00.000Z', undefined, 'Summer holiday');
+    expect(visit).not.toBeNull();
+    expect(visit!.entries[0].eventTitle).toBe('Summer holiday');
+  });
+
+  it('omits eventTitle when note not provided', () => {
+    const visit = createManualVisit('JP', '2024-01-15T00:00:00.000Z');
+    expect(visit).not.toBeNull();
+    expect(visit!.entries[0].eventTitle).toBeUndefined();
+  });
 });

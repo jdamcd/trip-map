@@ -89,8 +89,8 @@ function App() {
   }, []);
 
   const handleAddManualVisit = useCallback(
-    (countryCode: string, startDate: string, endDate?: string) => {
-      const newVisit = createManualVisit(countryCode, startDate, endDate);
+    (countryCode: string, startDate: string, endDate?: string, note?: string) => {
+      const newVisit = createManualVisit(countryCode, startDate, endDate, note);
       if (newVisit) {
         setVisits((prev) => mergeVisits(prev, [newVisit]));
       }

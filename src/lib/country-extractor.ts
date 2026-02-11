@@ -442,7 +442,8 @@ export function mergeVisits(
 export function createManualVisit(
   countryCode: string,
   startDate: string,
-  endDate?: string
+  endDate?: string,
+  note?: string
 ): CountryVisit | null {
   const country = countryByCode[countryCode];
   if (!country) return null;
@@ -456,6 +457,7 @@ export function createManualVisit(
         startDate,
         endDate,
         source: 'manual',
+        ...(note ? { eventTitle: note } : {}),
       },
     ],
   };
