@@ -14,9 +14,9 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   const [showCustom, setShowCustom] = useState(false);
 
   const presets: { value: PresetOption; label: string }[] = [
-    { value: '1y', label: '1 Year' },
-    { value: '5y', label: '5 Years' },
-    { value: 'all', label: 'All Time' },
+    { value: '1y', label: '1 year' },
+    { value: '5y', label: '5 years' },
+    { value: 'all', label: 'All' },
     { value: 'custom', label: 'Custom' },
   ];
 

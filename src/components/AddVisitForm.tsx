@@ -53,9 +53,9 @@ export function AddVisitForm({ onAdd, onCancel }: AddVisitFormProps) {
                   setCountryCode('');
                   setSearchTerm('');
                 }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 px-2 text-sm"
               >
-                Change
+                Edit
               </button>
             </div>
           ) : (
