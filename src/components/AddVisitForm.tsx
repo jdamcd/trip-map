@@ -105,7 +105,7 @@ export function AddVisitForm({ onAdd, onCancel }: AddVisitFormProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
+        <div className="min-w-0 overflow-hidden">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Start date
           </label>
@@ -113,11 +113,11 @@ export function AddVisitForm({ onAdd, onCancel }: AddVisitFormProps) {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full min-w-0 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
-        <div>
+        <div className="min-w-0 overflow-hidden">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             End date (optional)
           </label>
@@ -126,7 +126,7 @@ export function AddVisitForm({ onAdd, onCancel }: AddVisitFormProps) {
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             min={startDate}
-            className="w-full min-w-0 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
