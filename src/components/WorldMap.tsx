@@ -5,6 +5,7 @@ import type { MapRef } from '@vis.gl/react-mapbox';
 import type { CountryVisit } from '../types';
 import { countries, countryCoordinates } from '../data/countries';
 import { formatDateRange } from '../lib/dates';
+import { useDarkMode } from '../lib/useDarkMode';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -16,25 +17,11 @@ const COUNTRY_LAYER = 'country-fills';
 interface WorldMapProps {
   visits: CountryVisit[];
   homeCountry?: string;
+  flyHomeTrigger?: number;
   onCountryClick?: (countryCode: string) => void;
 }
 
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(() =>
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
-
-  return isDark;
-}
-
-export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps) {
+export function WorldMap({ visits, homeCountry, flyHomeTrigger, onCountryClick }: WorldMapProps) {
   const isDark = useDarkMode();
   const mapRef = useRef<MapRef>(null);
   const [hoverInfo, setHoverInfo] = useState<{
@@ -128,7 +115,7 @@ export function WorldMap({ visits, homeCountry, onCountryClick }: WorldMapProps)
     const coords = countryCoordinates[homeCountry];
     if (!coords) return;
     mapRef.current.flyTo({ center: coords, zoom: 3, duration: 1000 });
-  }, [homeCountry]);
+  }, [homeCountry, flyHomeTrigger]);
 
   const initialViewState = useMemo(() => {
     if (homeCountry) {

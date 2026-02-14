@@ -5,6 +5,8 @@ import { WorldMap } from './components/WorldMap';
 import { VisitList } from './components/VisitList';
 import { CalendarInput } from './components/CalendarInput';
 import { AddVisitForm } from './components/AddVisitForm';
+import { StatsPanel } from './components/StatsPanel';
+import { DateRangeFilter } from './components/DateRangeFilter';
 import { LegalPage } from './components/LegalPage';
 import {
   saveVisits,
@@ -36,9 +38,17 @@ function App() {
   });
   const [showAddForm, setShowAddForm] = useState(false);
   const [showCalendarInput, setShowCalendarInput] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [highlightedCountry, setHighlightedCountry] = useState<string>();
   const [homeCountry, setHomeCountry] = useState<string>(() => loadHomeCountry());
+  const [flyHomeCounter, setFlyHomeCounter] = useState(0);
   const [page, setPage] = useState<Page>(() => parseHash(window.location.hash));
+
+  const statsAvailable = dateRange.end.getFullYear() - dateRange.start.getFullYear() >= 2;
+
+  useEffect(() => {
+    if (!statsAvailable) setShowStats(false);
+  }, [statsAvailable]);
 
   // Listen for hash changes
   useEffect(() => {
@@ -180,7 +190,7 @@ function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">tripm.app</h1>
           <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
-            Extract travel history from your calendar
+            Visualise your travel history
           </p>
         </div>
       </header>
@@ -190,49 +200,64 @@ function App() {
       ) : (
         <main className="flex-1 max-w-7xl mx-auto w-full p-4 space-y-4">
           {/* Controls */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+            {/* Row 1: Action buttons */}
+            <div className="flex flex-wrap gap-2 p-4">
+              <button
+                onClick={() => setShowCalendarInput(!showCalendarInput)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              >
+                {showCalendarInput ? 'Cancel' : 'Import calendar'}
+              </button>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm"
+              >
+                {showAddForm ? 'Cancel' : 'Add trip'}
+              </button>
+              <button
+                onClick={() => setShowStats(!showStats)}
+                disabled={!statsAvailable || visits.length === 0}
+                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:opacity-40"
+              >
+                {showStats ? 'Hide stats' : 'Stats'}
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={visits.length === 0}
+                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:opacity-40"
+              >
+                Export
+              </button>
+              <label className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm cursor-pointer">
+                Import
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportJson}
+                  className="hidden"
+                />
+              </label>
+              {visits.length > 0 && (
                 <button
-                  onClick={() => setShowCalendarInput(!showCalendarInput)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                  onClick={handleClearAll}
+                  className="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 text-sm"
                 >
-                  {showCalendarInput ? 'Cancel' : 'Import calendar'}
+                  Reset
                 </button>
-                <button
-                  onClick={() => setShowAddForm(!showAddForm)}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm"
-                >
-                  {showAddForm ? 'Cancel' : 'Add trip manually'}
-                </button>
-                <button
-                  onClick={handleExport}
-                  disabled={visits.length === 0}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:bg-gray-300 dark:disabled:bg-gray-600"
-                >
-                  Export
-                </button>
-                <label className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm cursor-pointer">
-                  Import
-                  <input
-                    type="file"
-                    accept=".json"
-                    onChange={handleImportJson}
-                    className="hidden"
-                  />
-                </label>
-                {visits.length > 0 && (
-                  <button
-                    onClick={handleClearAll}
-                    className="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 text-sm"
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
+              )}
+            </div>
+
+            {/* Row 2: Period filter, home selector, stats */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+              <DateRangeFilter dateRange={dateRange} onChange={setDateRange} />
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <label htmlFor="home-country" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label
+                    htmlFor="home-country"
+                    className={`text-sm text-gray-700 dark:text-gray-300 ${homeCountry ? 'cursor-pointer hover:text-gray-900 dark:hover:text-white' : ''}`}
+                    onClick={() => { if (homeCountry) setFlyHomeCounter((c) => c + 1); }}
+                  >
                     Home
                   </label>
                   <div className="relative">
@@ -287,14 +312,17 @@ function App() {
             />
           )}
 
+          {/* Stats panel */}
+          {showStats && (
+            <StatsPanel visits={filteredVisits} />
+          )}
+
           {/* List and map */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:h-[600px]">
             {/* Visit list */}
             <div className="h-[400px] lg:h-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <VisitList
                 visits={filteredVisits}
-                dateRange={dateRange}
-                onDateRangeChange={setDateRange}
                 onDeleteVisit={handleDeleteEntry}
                 onDeleteCountry={handleDeleteCountry}
                 onEditEntry={handleEditEntry}
@@ -307,6 +335,7 @@ function App() {
               <WorldMap
                 visits={visitsInDateRange}
                 homeCountry={homeCountry}
+                flyHomeTrigger={flyHomeCounter}
                 onCountryClick={setHighlightedCountry}
               />
             </div>

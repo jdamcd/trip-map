@@ -1,21 +1,10 @@
 import { useState, useMemo } from 'react';
-import type { CountryVisit, DateRange, VisitEntry } from '../types';
+import type { CountryVisit, VisitEntry } from '../types';
 import { formatDateRange } from '../lib/dates';
-import { DateRangeFilter } from './DateRangeFilter';
-
-function getCountryFlag(countryCode: string): string {
-  // Convert country code to flag emoji using Regional Indicator Symbols
-  return countryCode
-    .toUpperCase()
-    .split('')
-    .map((char) => String.fromCodePoint(0x1f1e6 + char.charCodeAt(0) - 65))
-    .join('');
-}
+import { countryCodeToFlag } from '../lib/format';
 
 interface VisitListProps {
   visits: CountryVisit[];
-  dateRange: DateRange;
-  onDateRangeChange: (range: DateRange) => void;
   onDeleteVisit: (countryCode: string, entryId: string) => void;
   onDeleteCountry: (countryCode: string) => void;
   onEditEntry: (
@@ -37,8 +26,6 @@ const sortLabels: Record<SortBy, string> = {
 
 export function VisitList({
   visits,
-  dateRange,
-  onDateRangeChange,
   onDeleteVisit,
   onDeleteCountry,
   onEditEntry,
@@ -89,10 +76,11 @@ export function VisitList({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-3 border-b border-gray-200 dark:border-gray-700 space-y-2">
-        <DateRangeFilter dateRange={dateRange} onChange={onDateRangeChange} />
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 text-sm">
-          <span className="w-12 shrink-0 text-gray-500 dark:text-gray-400">Sort</span>
+          <svg className="w-4 h-4 shrink-0 mr-1 text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 6h18M6 12h12M9 18h6" />
+          </svg>
           {(['name', 'date', 'count'] as SortBy[]).map((option) => (
             <button
               key={option}
@@ -111,8 +99,11 @@ export function VisitList({
 
       <div className="flex-1 overflow-y-auto">
         {sortedVisits.length === 0 ? (
-          <div className="flex items-center justify-center h-full p-4 text-gray-500 dark:text-gray-400">
-            Import a calendar to get started
+          <div className="flex items-center justify-center h-full p-6 text-center text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            <div>
+              <p className="font-medium text-gray-700 dark:text-gray-300 mb-2">Import a calendar to visualise travel history</p>
+              <p>Trips are automatically detected from events like flights and hotel bookings</p>
+            </div>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -138,7 +129,7 @@ export function VisitList({
                         ▶
                       </span>
                       <span className="font-medium text-gray-900 dark:text-white">
-                        {getCountryFlag(visit.countryCode)} {visit.countryName}
+                        {countryCodeToFlag(visit.countryCode)} {visit.countryName}
                       </span>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         ({visit.entries.length} trip

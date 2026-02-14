@@ -80,8 +80,6 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div className="flex items-center gap-2">
-        <span className="w-12 shrink-0 text-sm text-gray-500 dark:text-gray-400">Period</span>
-
         <div className="flex flex-wrap gap-2">
           {presets.map(({ value, label, shortLabel }) => (
             <button
@@ -101,7 +99,7 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
       </div>
 
       {showCustom && (
-        <div className="flex items-center gap-2 ml-14">
+        <div className="flex items-center gap-2">
           <input
             type="date"
             value={format(dateRange.start, 'yyyy-MM-dd')}
