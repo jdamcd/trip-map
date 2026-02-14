@@ -45,10 +45,7 @@ function App() {
   const [page, setPage] = useState<Page>(() => parseHash(window.location.hash));
 
   const statsAvailable = dateRange.end.getFullYear() - dateRange.start.getFullYear() >= 2;
-
-  useEffect(() => {
-    if (!statsAvailable) setShowStats(false);
-  }, [statsAvailable]);
+  const statsVisible = showStats && statsAvailable;
 
   // Listen for hash changes
   useEffect(() => {
@@ -220,7 +217,7 @@ function App() {
                 disabled={!statsAvailable || visits.length === 0}
                 className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm disabled:opacity-40"
               >
-                {showStats ? 'Hide stats' : 'Stats'}
+                {statsVisible ? 'Hide stats' : 'Stats'}
               </button>
               <button
                 onClick={handleExport}
@@ -313,7 +310,7 @@ function App() {
           )}
 
           {/* Stats panel */}
-          {showStats && (
+          {statsVisible && (
             <StatsPanel visits={filteredVisits} />
           )}
 
