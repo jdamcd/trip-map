@@ -8,19 +8,23 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import type { CountryVisit } from '../types';
+import type { CountryVisit, DateRange } from '../types';
 import { tripsPerYear, continentCoverage, type YearTrips } from '../lib/stats';
 import { countryCodeToFlag } from '../lib/format';
 import { useDarkMode } from '../lib/useDarkMode';
 
 interface StatsPanelProps {
   visits: CountryVisit[];
+  dateRange: DateRange;
 }
 
-export function StatsPanel({ visits }: StatsPanelProps) {
+export function StatsPanel({ visits, dateRange }: StatsPanelProps) {
   const isDark = useDarkMode();
 
-  const yearData = useMemo(() => tripsPerYear(visits), [visits]);
+  const yearData = useMemo(() => {
+    const startYear = dateRange.start.getFullYear() <= 1900 ? undefined : dateRange.start.getFullYear();
+    return tripsPerYear(visits, startYear, dateRange.end.getFullYear());
+  }, [visits, dateRange]);
   const continentData = useMemo(() => continentCoverage(visits), [visits]);
 
   if (visits.length === 0) {

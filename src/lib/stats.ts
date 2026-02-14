@@ -14,7 +14,7 @@ export interface ContinentStats {
   countryCodes: string[];
 }
 
-export function tripsPerYear(visits: CountryVisit[]): YearTrips[] {
+export function tripsPerYear(visits: CountryVisit[], startYear?: number, endYear?: number): YearTrips[] {
   const byYear = new Map<number, { trips: number; perCountry: Map<string, number> }>();
   for (const visit of visits) {
     for (const entry of visit.entries) {
@@ -26,17 +26,27 @@ export function tripsPerYear(visits: CountryVisit[]): YearTrips[] {
     }
   }
 
+  if (byYear.size === 0) return [];
+
   const codeToName = new Map(visits.map((v) => [v.countryCode, v.countryName]));
 
-  return Array.from(byYear.entries())
-    .map(([year, { trips, perCountry }]) => ({
+  const minYear = startYear ?? Math.min(...byYear.keys());
+  const maxYear = endYear ?? Math.max(...byYear.keys(), new Date().getFullYear());
+
+  const result: YearTrips[] = [];
+  for (let year = minYear; year <= maxYear; year++) {
+    const data = byYear.get(year);
+    result.push({
       year,
-      trips,
-      countries: Array.from(perCountry.entries())
-        .map(([code, count]) => ({ code, name: codeToName.get(code) ?? code, count }))
-        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
-    }))
-    .sort((a, b) => a.year - b.year);
+      trips: data?.trips ?? 0,
+      countries: data
+        ? Array.from(data.perCountry.entries())
+            .map(([code, count]) => ({ code, name: codeToName.get(code) ?? code, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+        : [],
+    });
+  }
+  return result;
 }
 
 export function continentCoverage(visits: CountryVisit[]): ContinentStats[] {

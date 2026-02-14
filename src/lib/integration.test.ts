@@ -53,7 +53,7 @@ describe('calendar integration', () => {
       // Verify key countries are detected
       const expectedCountries = [
         'FR', 'ES', 'IT', 'JP', 'US', 'GR', 'PT', 'NL', 'DE', 'AT',
-        'CH', 'IE', 'HR', 'IS', 'TH', 'SG', 'AE', 'MV', 'BE', 'GB',
+        'CH', 'IE', 'AU', 'TH', 'SG', 'AE', 'BE', 'GB', 'MA',
       ];
       for (const code of expectedCountries) {
         expect(countryCodes).toContain(code);

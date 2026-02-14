@@ -311,7 +311,7 @@ function App() {
 
           {/* Stats panel */}
           {statsVisible && (
-            <StatsPanel visits={filteredVisits} />
+            <StatsPanel visits={filteredVisits} dateRange={dateRange} />
           )}
 
           {/* List and map */}

@@ -29,27 +29,55 @@ describe('tripsPerYear', () => {
       visit('DE', 'Germany', ['2022-06-01', '2023-12-01']),
     ];
     const result = tripsPerYear(visits);
-    expect(result).toEqual([
-      { year: 2022, trips: 1, countries: [{ code: 'DE', name: 'Germany', count: 1 }] },
-      {
-        year: 2023,
-        trips: 3,
-        countries: [
-          { code: 'FR', name: 'France', count: 2 },
-          { code: 'DE', name: 'Germany', count: 1 },
-        ],
-      },
-    ]);
+    const y2022 = result.find((r) => r.year === 2022);
+    const y2023 = result.find((r) => r.year === 2023);
+    expect(y2022).toEqual({ year: 2022, trips: 1, countries: [{ code: 'DE', name: 'Germany', count: 1 }] });
+    expect(y2023).toEqual({
+      year: 2023,
+      trips: 3,
+      countries: [
+        { code: 'FR', name: 'France', count: 2 },
+        { code: 'DE', name: 'Germany', count: 1 },
+      ],
+    });
+    expect(result[0].year).toBe(2022);
+    expect(result[result.length - 1].year).toBe(new Date().getFullYear());
   });
 
-  it('handles entries across many years', () => {
+  it('fills gap years with zero trips', () => {
     const visits = [
-      visit('JP', 'Japan', ['2020-01-01', '2021-01-01', '2022-01-01']),
+      visit('FR', 'France', ['2020-06-01']),
+      visit('DE', 'Germany', ['2023-06-01']),
     ];
     const result = tripsPerYear(visits);
-    expect(result).toHaveLength(3);
     expect(result[0].year).toBe(2020);
-    expect(result[2].year).toBe(2022);
+    const y2021 = result.find((r) => r.year === 2021);
+    const y2022 = result.find((r) => r.year === 2022);
+    expect(y2021).toEqual({ year: 2021, trips: 0, countries: [] });
+    expect(y2022).toEqual({ year: 2022, trips: 0, countries: [] });
+  });
+
+  it('extends to current year', () => {
+    const currentYear = new Date().getFullYear();
+    const visits = [
+      visit('JP', 'Japan', ['2020-01-01']),
+    ];
+    const result = tripsPerYear(visits);
+    expect(result[result.length - 1].year).toBe(currentYear);
+    expect(result).toHaveLength(currentYear - 2020 + 1);
+  });
+
+  it('respects custom date range bounds', () => {
+    const visits = [
+      visit('FR', 'France', ['2015-06-01']),
+      visit('DE', 'Germany', ['2018-03-01']),
+    ];
+    const result = tripsPerYear(visits, 2012, 2020);
+    expect(result[0].year).toBe(2012);
+    expect(result[result.length - 1].year).toBe(2020);
+    expect(result).toHaveLength(9);
+    expect(result.find((r) => r.year === 2015)!.trips).toBe(1);
+    expect(result.find((r) => r.year === 2013)!.trips).toBe(0);
   });
 });
 

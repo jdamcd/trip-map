@@ -22,6 +22,22 @@ test('populated map matches snapshot', async ({ page }) => {
   });
 });
 
+test('stats panel matches snapshot', async ({ page }) => {
+  await page.addInitScript((data) => {
+    localStorage.setItem('trip-map-visits', data);
+  }, storageData);
+
+  await page.goto('/');
+  await page.waitForSelector('canvas.mapboxgl-canvas');
+  await page.getByRole('button', { name: 'Stats' }).click();
+
+  const statsPanel = page.locator('text=Trips per year').locator('..').locator('..');
+  await statsPanel.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1000);
+
+  await expect(statsPanel).toHaveScreenshot('stats-panel.png');
+});
+
 test('empty map matches snapshot', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('canvas.mapboxgl-canvas');
