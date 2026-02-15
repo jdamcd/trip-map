@@ -14,6 +14,7 @@ npm run build     # TypeScript check + production build
 npm run lint      # ESLint check
 npm test          # Run tests in watch mode (Vitest)
 npm run test:run  # Run tests once
+npm run check     # Pre-commit check: tests, lint, build, e2e
 ```
 
 ## Architecture
