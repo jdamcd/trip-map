@@ -12,6 +12,10 @@ tripm.app ("we", "us", or "the app") is a client-side web application that helps
 - **Travel history** — Extracted country visits are stored in your browser's localStorage. This data never leaves your device unless you explicitly export it.
 - **Google Calendar access** — If you choose to connect your Google Calendar, we request read-only access to your calendar events. This data is fetched directly to your browser and processed locally. We do not store your Google credentials or calendar data on any server.
 
+### Data protection
+
+All data is processed locally in your browser and no data is transmitted to or stored on any server. Connections to third-party services (Google OAuth, MapBox) are encrypted. Data stored in localStorage remains on your device and under your control.
+
 ### Data sharing
 
 We do not share any data with third parties. Since we do not collect data, there is nothing to share.

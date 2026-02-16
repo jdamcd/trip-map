@@ -16,7 +16,7 @@ export function DateRangeFilter({ dateRange, onChange }: DateRangeFilterProps) {
   const presets: { value: PresetOption; label: string; shortLabel: string }[] = [
     { value: '1y', label: '1 year', shortLabel: '1Y' },
     { value: '5y', label: '5 years', shortLabel: '5Y' },
-    { value: 'all', label: 'All', shortLabel: 'All' },
+    { value: 'all', label: 'All time', shortLabel: 'All' },
     { value: 'custom', label: 'Custom', shortLabel: 'Custom' },
   ];
 
