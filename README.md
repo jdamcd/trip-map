@@ -6,15 +6,9 @@ A visual travel history based on events in your calendar.
 
 ## Features
 
-- **Calendar import**: Import trips from .ics calendar files, or paste iCal data directly
-- **Automatic detection**: Extracts travel events based on:
-  - Flights and airport codes (JFK, LHR, etc.)
-  - Hotel and accommodation bookings
-  - Multi-day events with country or city names
-  - Travel keywords (flight, hotel, trip, etc.)
+- **Calendar import**: Import from .ics files, paste iCal data, or connect Google Calendar
+- **Automatic detection**: Detects travel events from flights, airport codes, hotel bookings, and travel keywords
 - **Map**: View visited countries on an interactive world map
-- **Trip management**: Add, edit, and delete trips manually
-- **Filters**: Filter trips by date and exclude events from your home country
 - **Export/import**: Back up and restore your trip history
 
 ## Local development
@@ -32,8 +26,8 @@ npm run dev
 # Run tests
 npm test
 
-# Build for production
-npm run build
+# Run all checks (tests, lint, build, e2e)
+npm run check
 ```
 
 ## Privacy & security
