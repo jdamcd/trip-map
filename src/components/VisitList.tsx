@@ -101,6 +101,7 @@ export function VisitList({
         {sortedVisits.length === 0 ? (
           <div className="flex items-center justify-center h-full p-6 text-center text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
             <div>
+              <img src="/empty.png" srcSet="/empty.png 1x, /empty@2x.png 2x" alt="" className="w-32 mx-auto mb-4" />
               <p className="font-medium text-gray-700 dark:text-gray-300 mb-2">Import a calendar to visualise travel history</p>
               <p>Trips are automatically detected from events like flights and hotel bookings</p>
             </div>

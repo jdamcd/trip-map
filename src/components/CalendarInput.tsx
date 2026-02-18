@@ -341,7 +341,6 @@ export function CalendarInput({ onImport }: CalendarInputProps) {
                 />
               </svg>
               Connect Google Calendar
-              <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-700 dark:bg-purple-800/50 dark:text-purple-300">Beta</span>
             </button>
           )}
 
