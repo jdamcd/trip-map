@@ -23,9 +23,6 @@ echo "VITE_MAPBOX_TOKEN=your_token_here" > .env
 # Start development server
 npm run dev
 
-# Run tests
-npm test
-
 # Run all checks (tests, lint, build, e2e)
 npm run check
 ```
