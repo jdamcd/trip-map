@@ -176,6 +176,7 @@ function App() {
       )
     ) {
       setVisits([]);
+      setShowStats(false);
       clearVisits();
     }
   };
