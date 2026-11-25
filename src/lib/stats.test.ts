@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { tripsPerYear, continentCoverage } from './stats';
 import type { CountryVisit } from '../types';
+import { dateInputToISO } from './dates';
 
 function visit(
   countryCode: string,
@@ -12,7 +13,7 @@ function visit(
     countryName,
     entries: dates.map((d) => ({
       id: crypto.randomUUID(),
-      startDate: d,
+      startDate: dateInputToISO(d),
       source: 'manual' as const,
     })),
   };

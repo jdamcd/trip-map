@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { CountryVisit, VisitEntry } from '../types';
-import { formatDateRange } from '../lib/dates';
+import { dateInputToISO, formatDateRange, isoToDateInput } from '../lib/dates';
 import { countryCodeToFlag } from '../lib/format';
 
 interface VisitListProps {
@@ -240,16 +240,16 @@ interface EntryEditorProps {
 }
 
 function EntryEditor({ entry, onSave, onCancel }: EntryEditorProps) {
-  const [startDate, setStartDate] = useState(entry.startDate.split('T')[0]);
+  const [startDate, setStartDate] = useState(isoToDateInput(entry.startDate));
   const [endDate, setEndDate] = useState(
-    entry.endDate ? entry.endDate.split('T')[0] : ''
+    entry.endDate ? isoToDateInput(entry.endDate) : ''
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(
-      new Date(startDate).toISOString(),
-      endDate ? new Date(endDate).toISOString() : undefined
+      dateInputToISO(startDate),
+      endDate ? dateInputToISO(endDate) : undefined
     );
   };
 
