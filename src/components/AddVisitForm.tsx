@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { countries } from '../data/countries';
+import { dateInputToISO } from '../lib/dates';
 
 interface AddVisitFormProps {
   onAdd: (countryCode: string, startDate: string, endDate?: string, note?: string) => void;
@@ -25,8 +26,8 @@ export function AddVisitForm({ onAdd, onCancel }: AddVisitFormProps) {
 
     onAdd(
       countryCode,
-      new Date(startDate).toISOString(),
-      endDate ? new Date(endDate).toISOString() : undefined,
+      dateInputToISO(startDate),
+      endDate ? dateInputToISO(endDate) : undefined,
       note.trim() || undefined
     );
   };
